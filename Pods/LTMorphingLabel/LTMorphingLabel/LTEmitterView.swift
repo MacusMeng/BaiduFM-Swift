@@ -3,7 +3,7 @@
 //  LTMorphingLabelDemo
 //
 //  Created by Lex on 3/15/15.
-//  Copyright (c) 2015 LexTang.com. All rights reserved.
+//  Copyright (c) 2015 lexrus.com. All rights reserved.
 //
 
 import UIKit
@@ -21,7 +21,6 @@ public struct LTEmitter {
         }()
     
     let cell: CAEmitterCell = {
-        let image = UIImage(named:"Sparkle")!.CGImage
         let cell = CAEmitterCell()
         cell.name = "sparkle"
         cell.birthRate = 150.0
@@ -31,7 +30,6 @@ public struct LTEmitter {
         cell.lifetimeRange = 0.1
         cell.emissionLongitude = CGFloat(M_PI_2 * 2.0)
         cell.emissionRange = CGFloat(M_PI_2 * 2.0)
-        cell.contents = image
         cell.scale = 0.1
         cell.yAcceleration = 100
         cell.scaleSpeed = -0.06
@@ -41,9 +39,18 @@ public struct LTEmitter {
     
     public var duration: Float = 0.6
     
-    init(name: String, duration: Float) {
-        self.cell.name = name
+    init(name: String, particleName: String, duration: Float) {
+        cell.name = name
         self.duration = duration
+        
+        if let image = UIImage(
+            named: name,
+            inBundle: NSBundle(forClass: LTMorphingLabel.self),
+            compatibleWithTraitCollection: nil)?.CGImage {
+                self.cell.contents = image
+        } else {
+            cell.contents = UIImage(named: particleName)?.CGImage
+        }
     }
     
     public func play() {
@@ -68,7 +75,7 @@ public struct LTEmitter {
     
     func update(configureClosure: LTEmitterConfigureClosure? = .None) -> LTEmitter {
         if let closure = configureClosure {
-            configureClosure!(self.layer, self.cell)
+            closure(layer, cell)
         }
         return self
     }
@@ -86,16 +93,14 @@ public class LTEmitterView: UIView {
         return _emitters
         }()
     
-    public func createEmitter(name: String, duration: Float, configureClosure: LTEmitterConfigureClosure? = Optional.None) -> LTEmitter {
+    public func createEmitter(name: String, particleName: String, duration: Float, configureClosure: LTEmitterConfigureClosure?) -> LTEmitter {
         var emitter: LTEmitter
         if let e = emitterByName(name) {
             emitter = e
         } else {
-            emitter = LTEmitter(name: name, duration: duration)
+            emitter = LTEmitter(name: name, particleName: particleName, duration: duration)
             
-            if let closure = configureClosure {
-                configureClosure!(emitter.layer, emitter.cell)
-            }
+            configureClosure?(emitter.layer, emitter.cell)
             
             layer.addSublayer(emitter.layer)
             emitters.updateValue(emitter, forKey: name)
@@ -110,8 +115,8 @@ public class LTEmitterView: UIView {
         return Optional.None
     }
     
-    public func removeAllEmit() {
-        for (name, emitter) in emitters {
+    public func removeAllEmitters() {
+        for (_, emitter) in emitters {
             emitter.layer.removeFromSuperlayer()
         }
         emitters.removeAll(keepCapacity: false)

@@ -47,10 +47,10 @@ class LikeTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) 
         
         // Configure the cell...
-        var song = self.list![indexPath.row]
+        let song = self.list![indexPath.row]
         
         cell.textLabel?.text = song.name
         cell.detailTextLabel?.text = song.artist
@@ -83,13 +83,13 @@ class LikeTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        var song = self.list![indexPath.row]
-        var data:Dictionary<String,AnyObject> = ["song":song]
+        let song = self.list![indexPath.row]
+        let data:Dictionary<String,AnyObject> = ["song":song]
         NSNotificationCenter.defaultCenter().postNotificationName(OTHER_MUSIC_LIST_CLICK_NOTIFICATION, object: nil, userInfo: data)
         
         //导航控制器 跳转到root播放页面
         self.tabBarController?.selectedIndex = 0
-        var mainView = self.tabBarController?.viewControllers![0] as! UINavigationController
+        let mainView = self.tabBarController?.viewControllers![0] as! UINavigationController
         mainView.popToRootViewControllerAnimated(true)
         
     }

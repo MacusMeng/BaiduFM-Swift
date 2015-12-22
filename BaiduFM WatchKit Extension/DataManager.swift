@@ -62,10 +62,10 @@ class DataManager {
             if let songIdList = list {
                 DataManager.shareDataManager.allSongIdList = songIdList
                 //获取歌曲info信息
-                var songlist20 = [] + songIdList[0..<20]
+                let songlist20 = [] + songIdList[0..<20]
                 HttpRequest.getSongInfoList(songlist20, callback:{ (infolist:[SongInfo]?) -> Void in
                     if let sInfoList = infolist {
-                        println("getTop20SongInfoList")
+                        print("getTop20SongInfoList")
                         DataManager.shareDataManager.songInfoList = sInfoList
                         DataManager.shareDataManager.curIndex = 0
                         finish()

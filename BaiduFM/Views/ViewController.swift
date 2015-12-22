@@ -8,7 +8,6 @@
 
 import UIKit
 import MediaPlayer
-import Async
 import LTMorphingLabel
 
 class ViewController: UIViewController {
@@ -60,13 +59,13 @@ class ViewController: UIViewController {
         }
         
         if DataCenter.shareDataCenter.currentAllSongId.count == 0{
-            println("load data")
+            print("load data")
             HttpRequest.getSongList(self.currentChannel, callback: { (list) -> Void in
-                if let songlist = list {
+                if let _ = list {
                     DataCenter.shareDataCenter.currentAllSongId = list!
                     self.loadSongData()
                 }else{
-                    var alert = UIAlertView(title: "提示", message: "请连接网络", delegate: nil, cancelButtonTitle: "确定")
+                    let alert = UIAlertView(title: "提示", message: "请连接网络", delegate: nil, cancelButtonTitle: "确定")
                     alert.show()
                 }
             })
@@ -91,14 +90,14 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
-        println("viewDidAppear")
+        print("viewDidAppear")
         if !self.imgView.isAnimating() && DataCenter.shareDataCenter.curPlayStatus == 1{
             self.imgView.rotation()
         }
     }
     
     func appDidBecomeActive(){
-        println("appDidBecomeActive")
+        print("appDidBecomeActive")
         if !self.imgView.isAnimating() && DataCenter.shareDataCenter.curPlayStatus == 1{
             self.imgView.rotation()
         }
@@ -111,8 +110,8 @@ class ViewController: UIViewController {
     func otherMusicListClick(notification:NSNotification){
         
         var info = notification.userInfo as! [String:AnyObject]
-        var song = info["song"] as! Song
-        println("\(song.name)")
+        let song = info["song"] as! Song
+        print("\(song.name)")
         
         self.show(song.pic_url, name: song.name, artistName: song.artist, albumName: song.album, songLink: song.song_url, time: song.time, lrcLink: song.lrc_url, songId:song.sid, format:song.format)
     }
@@ -121,7 +120,7 @@ class ViewController: UIViewController {
         
         //println("progresstimer")
         if let link = DataCenter.shareDataCenter.curPlaySongLink {
-            var currentPlaybackTime = DataCenter.shareDataCenter.mp.currentPlaybackTime
+            let currentPlaybackTime = DataCenter.shareDataCenter.mp.currentPlaybackTime
             
             if currentPlaybackTime.isNaN {return}
             
@@ -131,7 +130,7 @@ class ViewController: UIViewController {
             //println(self.progressView.progress)
             self.songTimePlayLabel.text = Common.getMinuteDisplay(Int(currentPlaybackTime))
             
-            var len = (Int)(count(self.txtView.text)/link.time)
+            let len = (Int)((self.txtView.text).characters.count/link.time)
             
             self.txtView.scrollRangeToVisible(NSRange(location: 80 + len*Int(currentPlaybackTime), length: 15))
             
@@ -165,9 +164,7 @@ class ViewController: UIViewController {
     func start(index:Int){
         DataCenter.shareDataCenter.curPlayIndex = index
        // println(DataCenter.shareDataCenter.curPlayIndex)
-        
-        Async.main{
-            
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
             if index == 0 {
                 self.prevButton.enabled = false
             }else{
@@ -180,12 +177,12 @@ class ViewController: UIViewController {
                 self.nextButton.enabled = true
             }
             
-            var info = DataCenter.shareDataCenter.curPlaySongInfo
-            var link = DataCenter.shareDataCenter.curPlaySongLink
+            let info = DataCenter.shareDataCenter.curPlaySongInfo
+            let link = DataCenter.shareDataCenter.curPlaySongLink
             
             if info == nil || link == nil {return}
             
-            var showImg = Common.getIndexPageImage(info!)
+            let showImg = Common.getIndexPageImage(info!)
             
             self.show(showImg, name: info!.name, artistName: info!.artistName, albumName: info!.albumName, songLink: link!.songLink, time: link!.time, lrcLink: link!.lrcLink, songId:link!.id, format:link!.format)
             
@@ -221,13 +218,13 @@ class ViewController: UIViewController {
         
         //link 
         DataCenter.shareDataCenter.mp.stop()
-        var songUrl = Common.getCanPlaySongUrl(songLink)
+        let songUrl = Common.getCanPlaySongUrl(songLink)
         
         //如果已经下载 播放本地音乐
-        var musicFile = Common.musicLocalPath(songId, format: format)
+        let musicFile = Common.musicLocalPath(songId, format: format)
         if Common.fileIsExist(musicFile){
-            println("播放本地音乐")
-            DataCenter.shareDataCenter.mp.contentURL = NSURL(fileURLWithPath: musicFile)!
+            print("播放本地音乐")
+            DataCenter.shareDataCenter.mp.contentURL = NSURL(fileURLWithPath: musicFile)
         }else{
             DataCenter.shareDataCenter.mp.contentURL = NSURL(string: songUrl)
         }
@@ -242,8 +239,8 @@ class ViewController: UIViewController {
         //\\[\\d{2}:\\d{2}\\.\\d{2}\\]
         HttpRequest.getLrc(lrcLink, callback: { lrc -> Void in
             
-            println(lrc!)
-            var lrcAfter:String? = Common.replaceString("\\[[\\w|\\.|\\:|\\-]*\\]", replace: lrc!, place: "")
+            print(lrc!)
+            let lrcAfter:String? = Common.replaceString("\\[[\\w|\\.|\\:|\\-]*\\]", replace: lrc!, place: "")
             if let lrcDis = lrcAfter {
                 
                 if lrcDis.hasPrefix("<!DOCTYPE"){
@@ -279,29 +276,29 @@ class ViewController: UIViewController {
     //添加最近播放
     func addRecentSong(){
         
-        var info = DataCenter.shareDataCenter.curPlaySongInfo
-        var link = DataCenter.shareDataCenter.curPlaySongLink
+        let info = DataCenter.shareDataCenter.curPlaySongInfo
+        let link = DataCenter.shareDataCenter.curPlaySongLink
         
         if info == nil || link == nil {
             return
         }
         
         if DataCenter.shareDataCenter.dbSongList.insert(info!, link: link!){
-            println("\(info!.id)添加最近播放成功")
+            print("\(info!.id)添加最近播放成功")
         }else{
-            println("\(info!.id)添加最近播放失败")
+            print("\(info!.id)添加最近播放失败")
         }
     }
     
     @IBAction func prevSong(sender: UIButton) {
-        Async.background{
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
             self.prev()
         }
     }
     
     
     @IBAction func nextSong(sender: UIButton) {
-        Async.background{
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
             self.next()
         }
     }
@@ -326,10 +323,10 @@ class ViewController: UIViewController {
     func showNowPlay(songPic:String,name:String,artistName:String,albumName:String){
         
         //var showImg = Common.getIndexPageImage(info)        
-        var img = UIImage(data: NSData(contentsOfURL: NSURL(string: songPic)!)!)
-        var item = MPMediaItemArtwork(image: img)
+        let img = UIImage(data: NSData(contentsOfURL: NSURL(string: songPic)!)!)
+        let item = MPMediaItemArtwork(image: img!)
         
-        var dic:[NSObject : AnyObject] = [:]
+        var dic:[String : AnyObject] = [:]
         dic[MPMediaItemPropertyTitle] = name
         dic[MPMediaItemPropertyArtist] = artistName
         dic[MPMediaItemPropertyAlbumTitle] = albumName
@@ -339,21 +336,20 @@ class ViewController: UIViewController {
     }
     
     //接受锁屏事件
-    override func remoteControlReceivedWithEvent(event: UIEvent) {
-        
-        if event.type == UIEventType.RemoteControl{
-            switch event.subtype {
-                case UIEventSubtype.RemoteControlPlay:
-                    DataCenter.shareDataCenter.mp.play()
-                case UIEventSubtype.RemoteControlPause:
-                    DataCenter.shareDataCenter.mp.pause()
-                case UIEventSubtype.RemoteControlTogglePlayPause:
-                    self.togglePlayPause()
-                case UIEventSubtype.RemoteControlPreviousTrack:
-                    self.prev()
-                case UIEventSubtype.RemoteControlNextTrack:
-                    self.next()
-                default:break
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+        if event!.type == UIEventType.RemoteControl{
+            switch event!.subtype {
+            case UIEventSubtype.RemoteControlPlay:
+                DataCenter.shareDataCenter.mp.play()
+            case UIEventSubtype.RemoteControlPause:
+                DataCenter.shareDataCenter.mp.pause()
+            case UIEventSubtype.RemoteControlTogglePlayPause:
+                self.togglePlayPause()
+            case UIEventSubtype.RemoteControlPreviousTrack:
+                self.prev()
+            case UIEventSubtype.RemoteControlNextTrack:
+                self.next()
+            default:break
             }
         }
     }
@@ -390,35 +386,35 @@ class ViewController: UIViewController {
                 //删除下载
                 if Common.deleteSong(dbsong.sid, format: dbsong.format){
                     //更新db
-                    var ret2 = DataCenter.shareDataCenter.dbSongList.updateDownloadStatus(dbsong.sid, status: 0)
+                    _ = DataCenter.shareDataCenter.dbSongList.updateDownloadStatus(dbsong.sid, status: 0)
                     
                     self.dbSong!.is_dl = 0
                     self.downloadButton.setImage(UIImage(named: "Download"), forState: UIControlState.Normal)
-                    println("删除下载\(dbsong.sid)\(dbsong.name)")
+                    print("删除下载\(dbsong.sid)\(dbsong.name)")
                 }
             }else{
                 //下载
-                var musicPath = Common.musicLocalPath(dbsong.sid, format: dbsong.format)
+                let musicPath = Common.musicLocalPath(dbsong.sid, format: dbsong.format)
                 if Common.fileIsExist(musicPath){
-                    println("文件已经存在")
+                    print("文件已经存在")
                     return
                 }
                 
                 HttpRequest.downloadFile(dbsong.song_url, musicPath: musicPath, filePath: { () -> Void in
-                    println("下载完成\(musicPath)")
+                    print("下载完成\(musicPath)")
                     
                     if Common.fileIsExist(musicPath){
                         if DataCenter.shareDataCenter.dbSongList.updateDownloadStatus(dbsong.sid, status:1){
-                            println("\(dbsong.sid)更新db成功")
-                            Async.main{
+                            print("\(dbsong.sid)更新db成功")
+                            dispatch_async(dispatch_get_main_queue()) { () -> Void in
                                 self.dbSong!.is_dl = 1
                                 self.downloadButton.setImage(UIImage(named: "Downloaded"), forState: UIControlState.Normal)
                             }
                         }else{
-                            println("\(dbsong.sid)更新db失败")
+                            print("\(dbsong.sid)更新db失败")
                         }
                     }else{
-                        println("\(musicPath)文件不存在")
+                        print("\(musicPath)文件不存在")
                     }
                 })
             }
@@ -433,21 +429,21 @@ class ViewController: UIViewController {
             if dbsong.is_like == 1 {
                 //取消收藏
                 if DataCenter.shareDataCenter.dbSongList.updateLikeStatus(dbsong.sid, status: 0){
-                    println("\(dbsong.sid)\(dbsong.name)取消收藏成功")
+                    print("\(dbsong.sid)\(dbsong.name)取消收藏成功")
                     self.dbSong!.is_like = 0
                     self.likeButton.setImage(UIImage(named: "Unlike"), forState: UIControlState.Normal)
                 }else{
-                    println("\(dbsong.sid)取消收藏失败")
+                    print("\(dbsong.sid)取消收藏失败")
                 }
                 
             }else{
                 //收藏
                 if DataCenter.shareDataCenter.dbSongList.updateLikeStatus(dbsong.sid, status: 1){
-                    println("\(dbsong.sid)\(dbsong.name)收藏成功")
+                    print("\(dbsong.sid)\(dbsong.name)收藏成功")
                     self.dbSong!.is_like = 1
                     self.likeButton.setImage(UIImage(named: "Like"), forState: UIControlState.Normal)
                 }else{
-                    println("\(dbsong.sid)收藏失败")
+                    print("\(dbsong.sid)收藏失败")
                 }
             }
         }

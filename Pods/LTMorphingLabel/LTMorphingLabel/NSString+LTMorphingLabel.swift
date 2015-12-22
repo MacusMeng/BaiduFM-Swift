@@ -3,7 +3,7 @@
 //  https://github.com/lexrus/LTMorphingLabel
 //
 //  The MIT License (MIT)
-//  Copyright (c) 2015 Lex Tang, http://LexTang.com
+//  Copyright (c) 2015 Lex Tang, http://lexrus.com
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the “Software”), to deal
@@ -27,7 +27,7 @@
 import Foundation
 
 
-public enum LTCharacterDiffType: Int, DebugPrintable {
+public enum LTCharacterDiffType : Int, CustomDebugStringConvertible {
     
     case Same = 0
     case Add = 1
@@ -37,7 +37,6 @@ public enum LTCharacterDiffType: Int, DebugPrintable {
     case Replace
     
     public var debugDescription: String {
-    get {
         switch self {
         case .Same:
             return "Same"
@@ -53,19 +52,17 @@ public enum LTCharacterDiffType: Int, DebugPrintable {
             return "Replace"
         }
     }
-    }
     
 }
 
 
-public struct LTCharacterDiffResult: DebugPrintable {
+public struct LTCharacterDiffResult : CustomDebugStringConvertible {
     
     public var diffType: LTCharacterDiffType = .Add
     public var moveOffset: Int = 0
     public var skip: Bool = false
     
     public var debugDescription: String {
-    get {
         switch diffType {
         case .Same:
             return "The character is unchanged."
@@ -81,18 +78,17 @@ public struct LTCharacterDiffResult: DebugPrintable {
             return "The character is REPLACED with a new character."
         }
     }
-    }
     
 }
 
 
 public func >>(lhs: String, rhs: String) -> [LTCharacterDiffResult] {
     
-    let newChars = enumerate(rhs)
-    let lhsLength = count(lhs)
-    let rhsLength = count(rhs)
+    let newChars = rhs.characters.enumerate()
+    let lhsLength = lhs.characters.count
+    let rhsLength = rhs.characters.count
     var skipIndexes = [Int]()
-    let leftChars = Array(lhs)
+    let leftChars = Array(lhs.characters)
     
     let maxLength = max(lhsLength, rhsLength)
     var diffResults: [LTCharacterDiffResult] = Array(count: maxLength, repeatedValue: LTCharacterDiffResult())
@@ -142,7 +138,7 @@ public func >>(lhs: String, rhs: String) -> [LTCharacterDiffResult] {
         }
         
         if !foundCharacterInRhs {
-            if i < count(rhs) - 1 {
+            if i < rhs.characters.count - 1 {
                 diffResults[i].diffType = .Replace
             } else {
                 diffResults[i].diffType = .Delete

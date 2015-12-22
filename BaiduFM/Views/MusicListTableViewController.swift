@@ -26,9 +26,9 @@ class MusicListTableViewController: UITableViewController {
         })
         
         //下拉刷新
-        self.tableView.addLegendHeaderWithRefreshingTarget(self, refreshingAction: Selector("refreshList"))
+        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: Selector("refreshList"))
         
-        self.tableView.addLegendFooterWithRefreshingTarget(self, refreshingAction: Selector("loadMore"))
+        self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: Selector("loadMore"))
     }
     
     func loadSongData(){
@@ -42,8 +42,8 @@ class MusicListTableViewController: UITableViewController {
             DataCenter.shareDataCenter.curShowAllSongInfo = info!
             self.tableView.reloadData()
             
-            self.tableView.header.endRefreshing()
-            self.tableView.footer.endRefreshing()
+            self.tableView.mj_header.endRefreshing()
+            self.tableView.mj_footer.endRefreshing()
         })
         
         HttpRequest.getSongLinkList(self.curChannelList, callback: { (link) -> Void in
@@ -96,7 +96,7 @@ class MusicListTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) 
         
         var info =  DataCenter.shareDataCenter.curShowAllSongInfo[indexPath.row]
         

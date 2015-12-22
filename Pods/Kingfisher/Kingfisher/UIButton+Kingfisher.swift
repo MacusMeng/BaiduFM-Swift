@@ -24,36 +24,71 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import Foundation
+import UIKit
 
 /**
 *	Set image to use from web for a specified state.
 */
 public extension UIButton {
+
+    /**
+    Set an image to use for a specified state with a resource.
+    It will ask for Kingfisher's manager to get the image for the `cacheKey` property in `resource` and then set it for a button state.
+    The memory and disk will be searched first. If the manager does not find it, it will try to download the image at the `resource.downloadURL` and store it with `resource.cacheKey` for next use.
+    
+    - parameter resource: Resource object contains information such as `cacheKey` and `downloadURL`.
+    - parameter state:    The state that uses the specified image.
+    
+    - returns: A task represents the retrieving process.
+    */
+    public func kf_setImageWithResource(resource: Resource,
+                                  forState state: UIControlState) -> RetrieveImageTask
+    {
+        return kf_setImageWithResource(resource, forState: state, placeholderImage: nil, optionsInfo: nil, progressBlock: nil, completionHandler: nil)
+    }
+    
     /**
     Set an image to use for a specified state with a URL.
     It will ask for Kingfisher's manager to get the image for the URL and then set it for a button state.
-    The memory and disk will be searched first. If the manager does not find it, it will try to download the image at this URL and store it for next use.
+    The memory and disk will be searched first with `URL.absoluteString` as the cache key. If the manager does not find it, it will try to download the image at this URL and store the image with `URL.absoluteString` as cache key for next use.
     
-    :param: URL   The URL of image for specified state.
-    :param: state The state that uses the specified image.
+    If you need to specify the key other than `URL.absoluteString`, please use resource version of these APIs with `resource.cacheKey` set to what you want.
     
-    :returns: A task represents the retriving process.
+    - parameter URL:   The URL of image for specified state.
+    - parameter state: The state that uses the specified image.
+    
+    - returns: A task represents the retrieving process.
     */
     public func kf_setImageWithURL(URL: NSURL,
                         forState state: UIControlState) -> RetrieveImageTask
     {
         return kf_setImageWithURL(URL, forState: state, placeholderImage: nil, optionsInfo: nil, progressBlock: nil, completionHandler: nil)
     }
+
+    /**
+    Set an image to use for a specified state with a resource and a placeholder image.
+    
+    - parameter resource:         Resource object contains information such as `cacheKey` and `downloadURL`.
+    - parameter state:            The state that uses the specified image.
+    - parameter placeholderImage: A placeholder image when retrieving the image at URL.
+    
+    - returns: A task represents the retrieving process.
+    */
+    public func kf_setImageWithResource(resource: Resource,
+                                  forState state: UIControlState,
+                                placeholderImage: UIImage?) -> RetrieveImageTask
+    {
+        return kf_setImageWithResource(resource, forState: state, placeholderImage: placeholderImage, optionsInfo: nil, progressBlock: nil, completionHandler: nil)
+    }
     
     /**
     Set an image to use for a specified state with a URL and a placeholder image.
     
-    :param: URL              The URL of image for specified state.
-    :param: state            The state that uses the specified image.
-    :param: placeholderImage A placeholder image when retrieving the image at URL.
+    - parameter URL:              The URL of image for specified state.
+    - parameter state:            The state that uses the specified image.
+    - parameter placeholderImage: A placeholder image when retrieving the image at URL.
     
-    :returns: A task represents the retriving process.
+    - returns: A task represents the retrieving process.
     */
     public func kf_setImageWithURL(URL: NSURL,
                         forState state: UIControlState,
@@ -61,16 +96,34 @@ public extension UIButton {
     {
         return kf_setImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: nil, progressBlock: nil, completionHandler: nil)
     }
+
+    /**
+    Set an image to use for a specified state with a resource, a placeholder image and options.
+    
+    - parameter resource:         Resource object contains information such as `cacheKey` and `downloadURL`.
+    - parameter state:            The state that uses the specified image.
+    - parameter placeholderImage: A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:      A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    
+    - returns: A task represents the retrieving process.
+    */
+    public func kf_setImageWithResource(resource: Resource,
+                                  forState state: UIControlState,
+                                placeholderImage: UIImage?,
+                                     optionsInfo: KingfisherOptionsInfo?) -> RetrieveImageTask
+    {
+        return kf_setImageWithResource(resource, forState: state, placeholderImage: placeholderImage, optionsInfo: optionsInfo, progressBlock: nil, completionHandler: nil)
+    }
     
     /**
     Set an image to use for a specified state with a URL, a placeholder image and options.
     
-    :param: URL              The URL of image for specified state.
-    :param: state            The state that uses the specified image.
-    :param: placeholderImage A placeholder image when retrieving the image at URL.
-    :param: optionsInfo      A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    - parameter URL:              The URL of image for specified state.
+    - parameter state:            The state that uses the specified image.
+    - parameter placeholderImage: A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:      A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
     
-    :returns: A task represents the retriving process.
+    - returns: A task represents the retrieving process.
     */
     public func kf_setImageWithURL(URL: NSURL,
                         forState state: UIControlState,
@@ -79,17 +132,37 @@ public extension UIButton {
     {
         return kf_setImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: optionsInfo, progressBlock: nil, completionHandler: nil)
     }
+
+    /**
+    Set an image to use for a specified state with a resource, a placeholder image, options and completion handler.
+    
+    - parameter resource:          Resource object contains information such as `cacheKey` and `downloadURL`.
+    - parameter state:             The state that uses the specified image.
+    - parameter placeholderImage:  A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    - parameter completionHandler: Called when the image retrieved and set.
+    
+    - returns: A task represents the retrieving process.
+    */
+    public func kf_setImageWithResource(resource: Resource,
+                                  forState state: UIControlState,
+                                placeholderImage: UIImage?,
+                                     optionsInfo: KingfisherOptionsInfo?,
+                               completionHandler: CompletionHandler?) -> RetrieveImageTask
+    {
+        return kf_setImageWithResource(resource, forState: state, placeholderImage: placeholderImage, optionsInfo: optionsInfo, progressBlock: nil, completionHandler: completionHandler)
+    }
     
     /**
     Set an image to use for a specified state with a URL, a placeholder image, options and completion handler.
     
-    :param: URL               The URL of image for specified state.
-    :param: state             The state that uses the specified image.
-    :param: placeholderImage  A placeholder image when retrieving the image at URL.
-    :param: optionsInfo       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
-    :param: completionHandler Called when the image retrieved and set.
+    - parameter URL:               The URL of image for specified state.
+    - parameter state:             The state that uses the specified image.
+    - parameter placeholderImage:  A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    - parameter completionHandler: Called when the image retrieved and set.
     
-    :returns: A task represents the retriving process.
+    - returns: A task represents the retrieving process.
     */
     public func kf_setImageWithURL(URL: NSURL,
                         forState state: UIControlState,
@@ -99,18 +172,63 @@ public extension UIButton {
     {
         return kf_setImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: optionsInfo, progressBlock: nil, completionHandler: completionHandler)
     }
+
+    
+    /**
+    Set an image to use for a specified state with a resource, a placeholder image, options, progress handler and completion handler.
+    
+    - parameter resource:          Resource object contains information such as `cacheKey` and `downloadURL`.
+    - parameter state:             The state that uses the specified image.
+    - parameter placeholderImage:  A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    - parameter progressBlock:     Called when the image downloading progress gets updated.
+    - parameter completionHandler: Called when the image retrieved and set.
+    
+    - returns: A task represents the retrieving process.
+    */
+    public func kf_setImageWithResource(resource: Resource,
+                                  forState state: UIControlState,
+                                placeholderImage: UIImage?,
+                                     optionsInfo: KingfisherOptionsInfo?,
+                                   progressBlock: DownloadProgressBlock?,
+                               completionHandler: CompletionHandler?) -> RetrieveImageTask
+    {
+        setImage(placeholderImage, forState: state)
+        kf_setWebURL(resource.downloadURL, forState: state)
+        let task = KingfisherManager.sharedManager.retrieveImageWithResource(resource, optionsInfo: optionsInfo,
+            progressBlock: { receivedSize, totalSize in
+                if let progressBlock = progressBlock {
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        progressBlock(receivedSize: receivedSize, totalSize: totalSize)
+                    })
+                }
+            },
+            completionHandler: {[weak self] image, error, cacheType, imageURL in
+                
+                dispatch_async_safely_main_queue {
+                    if let sSelf = self {
+                        if imageURL == sSelf.kf_webURLForState(state) && image != nil {
+                            sSelf.setImage(image, forState: state)
+                        }
+                        completionHandler?(image: image, error: error, cacheType: cacheType, imageURL: imageURL)
+                    }
+                }
+            }
+        )
+        return task
+    }
     
     /**
     Set an image to use for a specified state with a URL, a placeholder image, options, progress handler and completion handler.
     
-    :param: URL               The URL of image for specified state.
-    :param: state             The state that uses the specified image.
-    :param: placeholderImage  A placeholder image when retrieving the image at URL.
-    :param: optionsInfo       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
-    :param: progressBlock     Called when the image downloading progress gets updated.
-    :param: completionHandler Called when the image retrieved and set.
+    - parameter URL:               The URL of image for specified state.
+    - parameter state:             The state that uses the specified image.
+    - parameter placeholderImage:  A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    - parameter progressBlock:     Called when the image downloading progress gets updated.
+    - parameter completionHandler: Called when the image retrieved and set.
     
-    :returns: A task represents the retriving process.
+    - returns: A task represents the retrieving process.
     */
     public func kf_setImageWithURL(URL: NSURL,
                         forState state: UIControlState,
@@ -119,24 +237,12 @@ public extension UIButton {
                          progressBlock: DownloadProgressBlock?,
                      completionHandler: CompletionHandler?) -> RetrieveImageTask
     {
-        setImage(placeholderImage, forState: state)
-        kf_setWebURL(URL, forState: state)
-        let task = KingfisherManager.sharedManager.retrieveImageWithURL(URL, optionsInfo: optionsInfo, progressBlock: { (receivedSize, totalSize) -> () in
-            if let progressBlock = progressBlock {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    progressBlock(receivedSize: receivedSize, totalSize: totalSize)
-                })
-            }
-        }) { (image, error, imageURL) -> () in
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                if (imageURL == self.kf_webURLForState(state) && image != nil) {
-                    self.setImage(image, forState: state)
-                }
-                completionHandler?(image: image, error: error, imageURL: imageURL)
-            })
-        }
-        
-        return task
+        return kf_setImageWithResource(Resource(downloadURL: URL),
+                                forState: state,
+                        placeholderImage: placeholderImage,
+                             optionsInfo: optionsInfo,
+                           progressBlock: progressBlock,
+                       completionHandler: completionHandler)
     }
 }
 
@@ -145,9 +251,9 @@ public extension UIButton {
     /**
     Get the image URL binded to this button for a specified state. 
     
-    :param: state The state that uses the specified image.
+    - parameter state: The state that uses the specified image.
     
-    :returns: Current URL for image.
+    - returns: Current URL for image.
     */
     public func kf_webURLForState(state: UIControlState) -> NSURL? {
         return kf_webURLs[NSNumber(unsignedLong:state.rawValue)] as? NSURL
@@ -158,18 +264,16 @@ public extension UIButton {
     }
     
     private var kf_webURLs: NSMutableDictionary {
-        get {
-            var dictionary = objc_getAssociatedObject(self, &lastURLKey) as? NSMutableDictionary
-            if dictionary == nil {
-                dictionary = NSMutableDictionary()
-                kf_setWebURLs(dictionary!)
-            }
-            return dictionary!
+        var dictionary = objc_getAssociatedObject(self, &lastURLKey) as? NSMutableDictionary
+        if dictionary == nil {
+            dictionary = NSMutableDictionary()
+            kf_setWebURLs(dictionary!)
         }
+        return dictionary!
     }
     
     private func kf_setWebURLs(URLs: NSMutableDictionary) {
-        objc_setAssociatedObject(self, &lastURLKey, URLs, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+        objc_setAssociatedObject(self, &lastURLKey, URLs, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }
 
@@ -178,29 +282,63 @@ public extension UIButton {
 */
 public extension UIButton {
     /**
+    Set the background image to use for a specified state with a resource.
+    It will ask for Kingfisher's manager to get the image for the `cacheKey` property in `resource` and then set it for a button state.
+    The memory and disk will be searched first. If the manager does not find it, it will try to download the image at the `resource.downloadURL` and store it with `resource.cacheKey` for next use.
+    
+    - parameter resource: Resource object contains information such as `cacheKey` and `downloadURL`.
+    - parameter state:    The state that uses the specified image.
+    
+    - returns: A task represents the retrieving process.
+    */
+    public func kf_setBackgroundImageWithResource(resource: Resource,
+                                            forState state: UIControlState) -> RetrieveImageTask
+    {
+        return kf_setBackgroundImageWithResource(resource, forState: state, placeholderImage: nil, optionsInfo: nil, progressBlock: nil, completionHandler: nil)
+    }
+    
+    /**
     Set the background image to use for a specified state with a URL.
     It will ask for Kingfisher's manager to get the image for the URL and then set it for a button state.
-    The memory and disk will be searched first. If the manager does not find it, it will try to download the image at this URL and store it for next use.
+    The memory and disk will be searched first with `URL.absoluteString` as the cache key. If the manager does not find it, it will try to download the image at this URL and store the image with `URL.absoluteString` as cache key for next use.
     
-    :param: URL   The URL of image for specified state.
-    :param: state The state that uses the specified image.
+    If you need to specify the key other than `URL.absoluteString`, please use resource version of these APIs with `resource.cacheKey` set to what you want.
     
-    :returns: A task represents the retriving process.
+    - parameter URL:   The URL of image for specified state.
+    - parameter state: The state that uses the specified image.
+    
+    - returns: A task represents the retrieving process.
     */
     public func kf_setBackgroundImageWithURL(URL: NSURL,
                                   forState state: UIControlState) -> RetrieveImageTask
     {
         return kf_setBackgroundImageWithURL(URL, forState: state, placeholderImage: nil, optionsInfo: nil, progressBlock: nil, completionHandler: nil)
     }
+
+    /**
+    Set the background image to use for a specified state with a resource and a placeholder image.
+    
+    - parameter resource:         Resource object contains information such as `cacheKey` and `downloadURL`.
+    - parameter state:            The state that uses the specified image.
+    - parameter placeholderImage: A placeholder image when retrieving the image at URL.
+    
+    - returns: A task represents the retrieving process.
+    */
+    public func kf_setBackgroundImageWithResource(resource: Resource,
+                                            forState state: UIControlState,
+                                          placeholderImage: UIImage?) -> RetrieveImageTask
+    {
+        return kf_setBackgroundImageWithResource(resource, forState: state, placeholderImage: placeholderImage, optionsInfo: nil, progressBlock: nil, completionHandler: nil)
+    }
     
     /**
     Set the background image to use for a specified state with a URL and a placeholder image.
     
-    :param: URL              The URL of image for specified state.
-    :param: state            The state that uses the specified image.
-    :param: placeholderImage A placeholder image when retrieving the image at URL.
+    - parameter URL:              The URL of image for specified state.
+    - parameter state:            The state that uses the specified image.
+    - parameter placeholderImage: A placeholder image when retrieving the image at URL.
     
-    :returns: A task represents the retriving process.
+    - returns: A task represents the retrieving process.
     */
     public func kf_setBackgroundImageWithURL(URL: NSURL,
                                   forState state: UIControlState,
@@ -208,16 +346,34 @@ public extension UIButton {
     {
         return kf_setBackgroundImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: nil, progressBlock: nil, completionHandler: nil)
     }
+
+    /**
+    Set the background image to use for a specified state with a resource, a placeholder image and options.
+    
+    - parameter resource:         Resource object contains information such as `cacheKey` and `downloadURL`.
+    - parameter state:            The state that uses the specified image.
+    - parameter placeholderImage: A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:      A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    
+    - returns: A task represents the retrieving process.
+    */
+    public func kf_setBackgroundImageWithResource(resource: Resource,
+                                            forState state: UIControlState,
+                                          placeholderImage: UIImage?,
+                                               optionsInfo: KingfisherOptionsInfo?) -> RetrieveImageTask
+    {
+        return kf_setBackgroundImageWithResource(resource, forState: state, placeholderImage: placeholderImage, optionsInfo: optionsInfo, progressBlock: nil, completionHandler: nil)
+    }
     
     /**
     Set the background image to use for a specified state with a URL, a placeholder image and options.
     
-    :param: URL              The URL of image for specified state.
-    :param: state            The state that uses the specified image.
-    :param: placeholderImage A placeholder image when retrieving the image at URL.
-    :param: optionsInfo      A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    - parameter URL:              The URL of image for specified state.
+    - parameter state:            The state that uses the specified image.
+    - parameter placeholderImage: A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:      A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
     
-    :returns: A task represents the retriving process.
+    - returns: A task represents the retrieving process.
     */
     public func kf_setBackgroundImageWithURL(URL: NSURL,
                                   forState state: UIControlState,
@@ -226,17 +382,37 @@ public extension UIButton {
     {
         return kf_setBackgroundImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: optionsInfo, progressBlock: nil, completionHandler: nil)
     }
+
+    /**
+    Set the background image to use for a specified state with a resource, a placeholder image, options and completion handler.
+    
+    - parameter resource:          Resource object contains information such as `cacheKey` and `downloadURL`.
+    - parameter state:             The state that uses the specified image.
+    - parameter placeholderImage:  A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    - parameter completionHandler: Called when the image retrieved and set.
+    
+    - returns: A task represents the retrieving process.
+    */
+    public func kf_setBackgroundImageWithResource(resource: Resource,
+                                            forState state: UIControlState,
+                                          placeholderImage: UIImage?,
+                                               optionsInfo: KingfisherOptionsInfo?,
+                                         completionHandler: CompletionHandler?) -> RetrieveImageTask
+    {
+        return kf_setBackgroundImageWithResource(resource, forState: state, placeholderImage: placeholderImage, optionsInfo: optionsInfo, progressBlock: nil, completionHandler: completionHandler)
+    }
     
     /**
     Set the background image to use for a specified state with a URL, a placeholder image, options and completion handler.
     
-    :param: URL               The URL of image for specified state.
-    :param: state             The state that uses the specified image.
-    :param: placeholderImage  A placeholder image when retrieving the image at URL.
-    :param: optionsInfo       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
-    :param: completionHandler Called when the image retrieved and set.
+    - parameter URL:               The URL of image for specified state.
+    - parameter state:             The state that uses the specified image.
+    - parameter placeholderImage:  A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    - parameter completionHandler: Called when the image retrieved and set.
     
-    :returns: A task represents the retriving process.
+    - returns: A task represents the retrieving process.
     */
     public func kf_setBackgroundImageWithURL(URL: NSURL,
                                   forState state: UIControlState,
@@ -246,19 +422,63 @@ public extension UIButton {
     {
         return kf_setBackgroundImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: optionsInfo, progressBlock: nil, completionHandler: completionHandler)
     }
-    
+
     /**
-    Set the background image to use for a specified state with a URL, 
+    Set the background image to use for a specified state with a resource,
     a placeholder image, options progress handler and completion handler.
     
-    :param: URL               The URL of image for specified state.
-    :param: state             The state that uses the specified image.
-    :param: placeholderImage  A placeholder image when retrieving the image at URL.
-    :param: optionsInfo       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
-    :param: progressBlock     Called when the image downloading progress gets updated.
-    :param: completionHandler Called when the image retrieved and set.
+    - parameter resource:          Resource object contains information such as `cacheKey` and `downloadURL`.
+    - parameter state:             The state that uses the specified image.
+    - parameter placeholderImage:  A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    - parameter progressBlock:     Called when the image downloading progress gets updated.
+    - parameter completionHandler: Called when the image retrieved and set.
     
-    :returns: A task represents the retriving process.
+    - returns: A task represents the retrieving process.
+    */
+    public func kf_setBackgroundImageWithResource(resource: Resource,
+                                            forState state: UIControlState,
+                                          placeholderImage: UIImage?,
+                                               optionsInfo: KingfisherOptionsInfo?,
+                                             progressBlock: DownloadProgressBlock?,
+                                         completionHandler: CompletionHandler?) -> RetrieveImageTask
+    {
+        setBackgroundImage(placeholderImage, forState: state)
+        kf_setBackgroundWebURL(resource.downloadURL, forState: state)
+        let task = KingfisherManager.sharedManager.retrieveImageWithResource(resource, optionsInfo: optionsInfo,
+            progressBlock: { receivedSize, totalSize in
+                if let progressBlock = progressBlock {
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        progressBlock(receivedSize: receivedSize, totalSize: totalSize)
+                    })
+                }
+            },
+            completionHandler: { [weak self] image, error, cacheType, imageURL in
+                dispatch_async_safely_main_queue {
+                    if let sSelf = self {
+                        if imageURL == sSelf.kf_backgroundWebURLForState(state) && image != nil {
+                            sSelf.setBackgroundImage(image, forState: state)
+                        }
+                        completionHandler?(image: image, error: error, cacheType: cacheType, imageURL: imageURL)
+                    }
+                }
+            }
+        )
+        return task
+    }
+    
+    /**
+    Set the background image to use for a specified state with a URL,
+    a placeholder image, options progress handler and completion handler.
+    
+    - parameter URL:               The URL of image for specified state.
+    - parameter state:             The state that uses the specified image.
+    - parameter placeholderImage:  A placeholder image when retrieving the image at URL.
+    - parameter optionsInfo:       A dictionary could control some behaviors. See `KingfisherOptionsInfo` for more.
+    - parameter progressBlock:     Called when the image downloading progress gets updated.
+    - parameter completionHandler: Called when the image retrieved and set.
+    
+    - returns: A task represents the retrieving process.
     */
     public func kf_setBackgroundImageWithURL(URL: NSURL,
                                   forState state: UIControlState,
@@ -267,24 +487,12 @@ public extension UIButton {
                                    progressBlock: DownloadProgressBlock?,
                                completionHandler: CompletionHandler?) -> RetrieveImageTask
     {
-        setBackgroundImage(placeholderImage, forState: state)
-        kf_setBackgroundWebURL(URL, forState: state)
-        let task = KingfisherManager.sharedManager.retrieveImageWithURL(URL, optionsInfo: optionsInfo, progressBlock: { (receivedSize, totalSize) -> () in
-            if let progressBlock = progressBlock {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    progressBlock(receivedSize: receivedSize, totalSize: totalSize)
-                })
-            }
-            }) { (image, error, imageURL) -> () in
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    if (imageURL == self.kf_backgroundWebURLForState(state) && image != nil) {
-                        self.setBackgroundImage(image, forState: state)
-                    }
-                    completionHandler?(image: image, error: error, imageURL: imageURL)
-                })
-        }
-        
-        return task
+        return kf_setBackgroundImageWithResource(Resource(downloadURL: URL),
+                                        forState: state,
+                                placeholderImage: placeholderImage,
+                                     optionsInfo: optionsInfo,
+                                   progressBlock: progressBlock,
+                               completionHandler: completionHandler)
     }
 }
 
@@ -293,9 +501,9 @@ public extension UIButton {
     /**
     Get the background image URL binded to this button for a specified state.
     
-    :param: state The state that uses the specified background image.
+    - parameter state: The state that uses the specified background image.
     
-    :returns: Current URL for background image.
+    - returns: Current URL for background image.
     */
     public func kf_backgroundWebURLForState(state: UIControlState) -> NSURL? {
         return kf_backgroundWebURLs[NSNumber(unsignedLong:state.rawValue)] as? NSURL
@@ -306,43 +514,41 @@ public extension UIButton {
     }
     
     private var kf_backgroundWebURLs: NSMutableDictionary {
-        get {
-            var dictionary = objc_getAssociatedObject(self, &lastBackgroundURLKey) as? NSMutableDictionary
-            if dictionary == nil {
-                dictionary = NSMutableDictionary()
-                kf_setBackgroundWebURLs(dictionary!)
-            }
-            return dictionary!
+        var dictionary = objc_getAssociatedObject(self, &lastBackgroundURLKey) as? NSMutableDictionary
+        if dictionary == nil {
+            dictionary = NSMutableDictionary()
+            kf_setBackgroundWebURLs(dictionary!)
         }
+        return dictionary!
     }
     
     private func kf_setBackgroundWebURLs(URLs: NSMutableDictionary) {
-        objc_setAssociatedObject(self, &lastBackgroundURLKey, URLs, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+        objc_setAssociatedObject(self, &lastBackgroundURLKey, URLs, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }
 
 // MARK: - Deprecated
 public extension UIButton {
-    @availability(*, deprecated=1.2, message="Use -kf_setImageWithURL:forState:placeholderImage:optionsInfo: instead.")
+    @available(*, deprecated=1.2, message="Use -kf_setImageWithURL:forState:placeholderImage:optionsInfo: instead.")
     public func kf_setImageWithURL(URL: NSURL,
                         forState state: UIControlState,
                       placeholderImage: UIImage?,
                                options: KingfisherOptions) -> RetrieveImageTask
     {
-        return kf_setImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options: options], progressBlock: nil, completionHandler: nil)
+        return kf_setImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options(options)], progressBlock: nil, completionHandler: nil)
     }
     
-    @availability(*, deprecated=1.2, message="Use -kf_setImageWithURL:forState:placeholderImage:optionsInfo:completionHandler: instead.")
+    @available(*, deprecated=1.2, message="Use -kf_setImageWithURL:forState:placeholderImage:optionsInfo:completionHandler: instead.")
     public func kf_setImageWithURL(URL: NSURL,
                         forState state: UIControlState,
                       placeholderImage: UIImage?,
                                options: KingfisherOptions,
                      completionHandler: CompletionHandler?) -> RetrieveImageTask
     {
-        return kf_setImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options: options], progressBlock: nil, completionHandler: completionHandler)
+        return kf_setImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options(options)], progressBlock: nil, completionHandler: completionHandler)
     }
     
-    @availability(*, deprecated=1.2, message="Use -kf_setImageWithURL:forState:placeholderImage:optionsInfo:progressBlock:completionHandler: instead.")
+    @available(*, deprecated=1.2, message="Use -kf_setImageWithURL:forState:placeholderImage:optionsInfo:progressBlock:completionHandler: instead.")
     public func kf_setImageWithURL(URL: NSURL,
                         forState state: UIControlState,
                       placeholderImage: UIImage?,
@@ -350,30 +556,30 @@ public extension UIButton {
                          progressBlock: DownloadProgressBlock?,
                      completionHandler: CompletionHandler?) -> RetrieveImageTask
     {
-        return kf_setImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options: options], progressBlock: progressBlock, completionHandler: completionHandler)
+        return kf_setImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options(options)], progressBlock: progressBlock, completionHandler: completionHandler)
     }
     
-    @availability(*, deprecated=1.2, message="Use -kf_setBackgroundImageWithURL:forState:placeholderImage:optionsInfo: instead.")
+    @available(*, deprecated=1.2, message="Use -kf_setBackgroundImageWithURL:forState:placeholderImage:optionsInfo: instead.")
     public func kf_setBackgroundImageWithURL(URL: NSURL,
                                   forState state: UIControlState,
                                 placeholderImage: UIImage?,
                                          options: KingfisherOptions) -> RetrieveImageTask
     {
-        return kf_setBackgroundImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options: options], progressBlock: nil, completionHandler: nil)
+        return kf_setBackgroundImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options(options)], progressBlock: nil, completionHandler: nil)
     }
     
-    @availability(*, deprecated=1.2, message="Use -kf_setBackgroundImageWithURL:forState:placeholderImage:optionsInfo:completionHandler: instead.")
+    @available(*, deprecated=1.2, message="Use -kf_setBackgroundImageWithURL:forState:placeholderImage:optionsInfo:completionHandler: instead.")
     public func kf_setBackgroundImageWithURL(URL: NSURL,
                                   forState state: UIControlState,
                                 placeholderImage: UIImage?,
                                          options: KingfisherOptions,
                                completionHandler: CompletionHandler?) -> RetrieveImageTask
     {
-        return kf_setBackgroundImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options: options], progressBlock: nil, completionHandler: completionHandler)
+        return kf_setBackgroundImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options(options)], progressBlock: nil, completionHandler: completionHandler)
     }
     
     
-    @availability(*, deprecated=1.2, message="Use -kf_setBackgroundImageWithURL:forState:placeholderImage:optionsInfo:progressBlock:completionHandler: instead.")
+    @available(*, deprecated=1.2, message="Use -kf_setBackgroundImageWithURL:forState:placeholderImage:optionsInfo:progressBlock:completionHandler: instead.")
     public func kf_setBackgroundImageWithURL(URL: NSURL,
                                   forState state: UIControlState,
                                 placeholderImage: UIImage?,
@@ -381,7 +587,6 @@ public extension UIButton {
                                    progressBlock: DownloadProgressBlock?,
                                completionHandler: CompletionHandler?) -> RetrieveImageTask
     {
-        return kf_setBackgroundImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options: options], progressBlock: progressBlock, completionHandler: completionHandler)
+        return kf_setBackgroundImageWithURL(URL, forState: state, placeholderImage: placeholderImage, optionsInfo: [.Options(options)], progressBlock: progressBlock, completionHandler: completionHandler)
     }
 }
-

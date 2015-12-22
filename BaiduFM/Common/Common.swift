@@ -55,11 +55,11 @@ class Common {
     */
     class func getMinuteDisplay(seconds: Int) ->String{
         
-        var minute = Int(seconds/60)
-        var second = seconds%60
+        let minute = Int(seconds/60)
+        let second = seconds%60
         
-        var minuteStr = minute >= 10 ? String(minute) : "0\(minute)"
-        var secondStr = second >= 10 ? String(second) : "0\(second)"
+        let minuteStr = minute >= 10 ? String(minute) : "0\(minute)"
+        let secondStr = second >= 10 ? String(second) : "0\(second)"
         
         return "\(minuteStr):\(secondStr)"
     }
@@ -74,8 +74,8 @@ class Common {
     :returns: 替换后的字符串
     */
     class func replaceString(pattern:String, replace:String, place:String)->String?{
-        var exp =  NSRegularExpression(pattern: pattern, options: NSRegularExpressionOptions.CaseInsensitive, error: nil)
-        return exp?.stringByReplacingMatchesInString(replace, options: nil, range: NSRange(location: 0,length: count(replace)), withTemplate: place)
+        let exp = try! NSRegularExpression(pattern: pattern, options: NSRegularExpressionOptions.CaseInsensitive)
+        return exp.stringByReplacingMatchesInString(replace, options: NSMatchingOptions.Anchored, range: NSRange(location: 0,length: replace.characters.count), withTemplate: place)
     }
     
     class func fileIsExist(filePath:String)->Bool{
@@ -84,38 +84,42 @@ class Common {
     
     class func musicLocalPath(songId:String, format:String) -> String{
         
-        var musicDir = Utils.documentPath().stringByAppendingPathComponent("download")
+        let musicDir = Utils.documentPath().stringByAppendingString("download")
         if !NSFileManager.defaultManager().fileExistsAtPath(musicDir){
-            NSFileManager.defaultManager().createDirectoryAtPath(musicDir, withIntermediateDirectories: false, attributes: nil, error: nil)
+           try! NSFileManager.defaultManager().createDirectoryAtPath(musicDir, withIntermediateDirectories: false, attributes: nil)
         }
-        var musicPath = musicDir.stringByAppendingPathComponent(songId + "." + format)
+        let musicPath = musicDir.stringByAppendingString(songId + "." + format)
         return musicPath
     }
     
     class func cleanAllDownloadSong(){
        
         //删除歌曲文件夹
-        var musicDir = Utils.documentPath().stringByAppendingPathComponent("download")
-        NSFileManager.defaultManager().removeItemAtPath(musicDir, error: nil)
+        let musicDir = Utils.documentPath().stringByAppendingString("download")
+        try! NSFileManager.defaultManager().removeItemAtPath(musicDir)
         
     }
     
     class func deleteSong(songId:String, format:String)->Bool{
         //删除本地歌曲
-        var musicPath = self.musicLocalPath(songId, format: format)
-        var ret = NSFileManager.defaultManager().removeItemAtPath(musicPath, error: nil)
-        return ret
+        let musicPath = self.musicLocalPath(songId, format: format)
+        do{
+            try NSFileManager.defaultManager().removeItemAtPath(musicPath)
+            return true
+        }catch{
+            print(error)
+            return false
+        }
     }
     
     class func matchesForRegexInText(regex: String!, text: String!) -> [String] {
         
-        let regex = NSRegularExpression(pattern: regex,
-            options: nil, error: nil)!
+        let regex = try! NSRegularExpression(pattern: regex,
+            options: NSRegularExpressionOptions.AnchorsMatchLines)
         let nsString = text as NSString
         let results = regex.matchesInString(text,
-            options: nil, range: NSMakeRange(0, nsString.length))
-            as! [NSTextCheckingResult]
-        return map(results) { nsString.substringWithRange($0.range)}
+            options: NSMatchingOptions.Anchored, range: NSMakeRange(0, nsString.length))
+        return results.map{ nsString.substringWithRange($0.range)}
     }
     
     //02:57 => 2*60+57=177
@@ -124,8 +128,8 @@ class Common {
         var strArr = time.componentsSeparatedByString(":")
         if strArr.count == 0 {return nil}
         
-        var minute =  strArr[0].toInt()
-        var second = strArr[1].toInt()
+        let minute = Int(strArr[0])
+        let second = Int(strArr[1])
         
         if let min = minute, sec = second{
             return min * 60 + sec
@@ -135,13 +139,13 @@ class Common {
     
     class func subStr(str:String, start:Int, length:Int)->String{
         
-        return str.substringWithRange(Range<String.Index>(start: advance(str.startIndex, start), end: advance(str.startIndex, start+length)))
+        return str.substringWithRange(Range<String.Index>(start: str.startIndex.advancedBy(start), end: str.startIndex.advancedBy(start+length)))
         
     }
     
     class func praseSongLrc(lrc:String)->[(lrc:String,time:Int)]{
         
-        var list = lrc.componentsSeparatedByString("\n")
+        let list = lrc.componentsSeparatedByString("\n")
         var ret:[(lrc:String,time:Int)] = []
         
         for row in list {
@@ -151,16 +155,16 @@ class Common {
             
             if timeArray.count == 0 {continue}
             //[02:57.26]
-            var lrcTime = timeArray[0]
+            let lrcTime = timeArray[0]
             
             var lrcTxt:String = ""
             if lrcArray.count >= 1 {
                 lrcTxt = lrcArray[0]
-                lrcTxt = subStr(lrcTxt, start: 1, length: count(lrcTxt)-1)
+                lrcTxt = subStr(lrcTxt, start: 1, length: lrcTxt.characters.count)
             }
             
             //02:57
-            var time = subStr(lrcTime, start: 1, length: 5)
+            let time = subStr(lrcTime, start: 1, length: 5)
             
             //println("time=\(time),txt=\(lrcTxt)")
             
@@ -174,11 +178,11 @@ class Common {
     class func currentLrcByTime(curLength:Int, lrcArray:[(lrc:String,time:Int)])->(String,String){
         
         var i = 0
-        for (lrc:String,time:Int) in lrcArray {
+        for (lrc,time) in lrcArray {
 
             if time >= curLength {
                 if i == 0 { return (lrc, "") }
-                var prev = lrcArray[i-1]
+                let prev = lrcArray[i-1]
                 return (prev.lrc,lrc)
             }
             i++

@@ -20,11 +20,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         //后台播放音乐
-        AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, error: nil)
-        AVAudioSession.sharedInstance().setActive(true, error: nil)
+        try! AVAudioSession.sharedInstance().setCategory("歌曲", withOptions: AVAudioSessionCategoryOptions.DefaultToSpeaker)
+        try! AVAudioSession.sharedInstance().setActive(true)
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         
-        var db = BaseDb()
+        _ = BaseDb()
         
         //初始化图片缓存库配置  Kingfisher
         let downloader = KingfisherManager.sharedManager.downloader

@@ -12,7 +12,7 @@ class SongList:BaseDb {
     
     func getAll()->[Song]?{
         if self.open(){
-            var sql = "SELECT * FROM tbl_song_list"
+            let sql = "SELECT * FROM tbl_song_list"
             if let rs = self.db.executeQuery(sql, withArgumentsInArray: nil){
                 return self.fetchResult(rs)
             }
@@ -22,7 +22,7 @@ class SongList:BaseDb {
     
     func get(sid:String)->Song?{
         if self.open(){
-            var sql = "SELECT * FROM tbl_song_list WHERE sid=?"
+            let sql = "SELECT * FROM tbl_song_list WHERE sid=?"
             if let rs = self.db.executeQuery(sql, withArgumentsInArray: [sid]){
                 var ret = self.fetchResult(rs)
                 if ret.count == 0 {return nil}
@@ -34,7 +34,7 @@ class SongList:BaseDb {
     
     func getAllDownload()->[Song]?{
         if self.open(){
-            var sql = "SELECT * FROM tbl_song_list WHERE is_dl=1"
+            let sql = "SELECT * FROM tbl_song_list WHERE is_dl=1"
             if let rs = self.db.executeQuery(sql, withArgumentsInArray: nil){
                 return self.fetchResult(rs)
             }
@@ -44,7 +44,7 @@ class SongList:BaseDb {
     
     func getAllLike()->[Song]?{
         if self.open(){
-            var sql = "SELECT * FROM tbl_song_list WHERE is_like=1"
+            let sql = "SELECT * FROM tbl_song_list WHERE is_like=1"
             if let rs = self.db.executeQuery(sql, withArgumentsInArray: nil){
                 return self.fetchResult(rs)
             }
@@ -54,7 +54,7 @@ class SongList:BaseDb {
     
     func getAllRecent()->[Song]?{
         if self.open(){
-            var sql = "SELECT * FROM tbl_song_list WHERE is_recent=1 ORDER BY id DESC LIMIT 20 OFFSET 0"
+            let sql = "SELECT * FROM tbl_song_list WHERE is_recent=1 ORDER BY id DESC LIMIT 20 OFFSET 0"
             if let rs = self.db.executeQuery(sql, withArgumentsInArray: nil){
                 return self.fetchResult(rs)
             }
@@ -88,7 +88,7 @@ class SongList:BaseDb {
                 dl_file = dl_file_tmp as String
             }
             
-            var song = Song(sid: sid, name: name, artist: artist, album: album, song_url: song_url, pic_url: pic_url, lrc_url: lrc_url, time: time, is_dl: is_dl, dl_file: dl_file, is_like: is_like, is_recent: is_recent,format:format)
+            let song = Song(sid: sid, name: name, artist: artist, album: album, song_url: song_url, pic_url: pic_url, lrc_url: lrc_url, time: time, is_dl: is_dl, dl_file: dl_file, is_like: is_like, is_recent: is_recent,format:format)
             
             ret.append(song)
         }
@@ -99,19 +99,19 @@ class SongList:BaseDb {
     func insert(info:SongInfo, link:SongLink)->Bool{
         if self.open(){
             
-            if let song = self.get(info.id) {
-                println("\(info.id)已经添加")
+            if let _ = self.get(info.id) {
+                print("\(info.id)已经添加")
                 return false
             }
             
             if self.open(){
-                var sql = "INSERT INTO tbl_song_list(sid,name,artist,album,song_url,pic_url,lrc_url,time,format) VALUES(?,?,?,?,?,?,?,?,?)"
+                let sql = "INSERT INTO tbl_song_list(sid,name,artist,album,song_url,pic_url,lrc_url,time,format) VALUES(?,?,?,?,?,?,?,?,?)"
                 
-                var songUrl = Common.getCanPlaySongUrl(link.songLink)
-                var img = Common.getIndexPageImage(info)
+                let songUrl = Common.getCanPlaySongUrl(link.songLink)
+                let img = Common.getIndexPageImage(info)
                 
-                var args:[AnyObject] = [info.id,info.name,info.artistName,info.albumName,songUrl,img,link.lrcLink,link.time,link.format]
-                var ret = self.db.executeUpdate(sql, withArgumentsInArray: args)
+                let args:[AnyObject] = [info.id,info.name,info.artistName,info.albumName,songUrl,img,link.lrcLink,link.time,link.format]
+                let ret = self.db.executeUpdate(sql, withArgumentsInArray: args)
                 self.close()
                 return ret
             }
@@ -121,8 +121,8 @@ class SongList:BaseDb {
     
     func delete(sid:String)->Bool{
         if self.open(){
-            var sql = "DELETE FROM tbl_song_list WHERE sid=?"
-            var ret = self.db.executeUpdate(sql, withArgumentsInArray: [sid])
+            let sql = "DELETE FROM tbl_song_list WHERE sid=?"
+            let ret = self.db.executeUpdate(sql, withArgumentsInArray: [sid])
             self.close()
             return ret
         }
@@ -131,8 +131,8 @@ class SongList:BaseDb {
     
     func updateDownloadStatus(sid:String, status:Int)->Bool{
         if self.open(){
-            var sql = "UPDATE tbl_song_list set is_dl=? WHERE sid=?"
-            var ret = self.db.executeUpdate(sql, withArgumentsInArray: [status,sid])
+            let sql = "UPDATE tbl_song_list set is_dl=? WHERE sid=?"
+            let ret = self.db.executeUpdate(sql, withArgumentsInArray: [status,sid])
             self.close()
             return ret
         }
@@ -144,8 +144,8 @@ class SongList:BaseDb {
         if status != 0 && status != 1 {return false}
         
         if self.open(){
-            var sql = "UPDATE tbl_song_list set is_like=? WHERE sid=?"
-            var ret = self.db.executeUpdate(sql, withArgumentsInArray: [status,sid])
+            let sql = "UPDATE tbl_song_list set is_like=? WHERE sid=?"
+            let ret = self.db.executeUpdate(sql, withArgumentsInArray: [status,sid])
             self.close()
             return ret
         }
@@ -155,8 +155,8 @@ class SongList:BaseDb {
 // MARK: - Clear
     func clearLikeList()->Bool{
         if self.open(){
-            var sql = "update tbl_song_list set is_like = 0"
-            var ret = self.db.executeUpdate(sql, withArgumentsInArray: nil)
+            let sql = "update tbl_song_list set is_like = 0"
+            let ret = self.db.executeUpdate(sql, withArgumentsInArray: nil)
             self.close()
             return ret
         }
@@ -165,8 +165,8 @@ class SongList:BaseDb {
     
     func cleanDownloadList()->Bool{
         if self.open(){
-            var sql = "update tbl_song_list set is_dl = 0"
-            var ret = self.db.executeUpdate(sql, withArgumentsInArray: nil)
+            let sql = "update tbl_song_list set is_dl = 0"
+            let ret = self.db.executeUpdate(sql, withArgumentsInArray: nil)
             self.close()
             return ret
         }
@@ -177,9 +177,9 @@ class SongList:BaseDb {
         
         if self.open(){
             var sql = "update tbl_song_list set is_recent=0 where is_dl = 1 or is_like=1"
-            var ret1 = self.db.executeUpdate(sql, withArgumentsInArray: nil)
+            let ret1 = self.db.executeUpdate(sql, withArgumentsInArray: nil)
             sql = "delete from tbl_song_list where is_recent = 1"
-            var ret2 = self.db.executeUpdate(sql, withArgumentsInArray: nil)
+            let ret2 = self.db.executeUpdate(sql, withArgumentsInArray: nil)
             self.close()
             return ret1 && ret2
         }

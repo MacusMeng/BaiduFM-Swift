@@ -44,7 +44,7 @@ class ChannelTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) 
 
         // Configure the cell...
         cell.textLabel?.text = DataCenter.shareDataCenter.channelListInfo[indexPath.row].name
@@ -54,7 +54,7 @@ class ChannelTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
         
-        var channel = DataCenter.shareDataCenter.channelListInfo[indexPath.row]
+        let channel = DataCenter.shareDataCenter.channelListInfo[indexPath.row]
         DataCenter.shareDataCenter.currentChannel = channel.id
         DataCenter.shareDataCenter.currentChannelName = channel.name
         DataCenter.shareDataCenter.curShowStartIndex = 0

@@ -15,14 +15,14 @@ class BaseDb {
     
     init(){
         
-        println("basedb init")
-        var dbDirectory = Utils.documentPath().stringByAppendingPathComponent("database")
+        print("basedb init")
+        let dbDirectory = Utils.documentPath().stringByAppendingString("database")
         
         if !NSFileManager.defaultManager().fileExistsAtPath(dbDirectory){
-                NSFileManager.defaultManager().createDirectoryAtPath(dbDirectory, withIntermediateDirectories: false, attributes: nil, error: nil)
+               try! NSFileManager.defaultManager().createDirectoryAtPath(dbDirectory, withIntermediateDirectories: false, attributes: nil)
         }
         
-        self.dbPath = dbDirectory.stringByAppendingPathComponent("baidufm.sqlite")
+        self.dbPath = dbDirectory.stringByAppendingString("baidufm.sqlite")
         
         self.db = FMDatabase(path: self.dbPath)
         //println(dbPath)
@@ -30,14 +30,14 @@ class BaseDb {
         //db文件不存在则创建
         if !NSFileManager.defaultManager().fileExistsAtPath(self.dbPath){
             if self.open() {
-                var sql = "CREATE TABLE tbl_song_list (id INTEGER PRIMARY KEY AUTOINCREMENT,sid TEXT UNIQUE,name TEXT,artist TEXT,album TEXT,song_url  TEXT,pic_url   TEXT,lrc_url TEXT,time INTEGER,is_dl INTEGER DEFAULT 0,dl_file TEXT,is_like INTEGER DEFAULT 0,is_recent INTEGER DEFAULT 1,format TEXT)"
+                let sql = "CREATE TABLE tbl_song_list (id INTEGER PRIMARY KEY AUTOINCREMENT,sid TEXT UNIQUE,name TEXT,artist TEXT,album TEXT,song_url  TEXT,pic_url   TEXT,lrc_url TEXT,time INTEGER,is_dl INTEGER DEFAULT 0,dl_file TEXT,is_like INTEGER DEFAULT 0,is_recent INTEGER DEFAULT 1,format TEXT)"
                 if !self.db.executeUpdate(sql, withArgumentsInArray: nil){
-                    println("db创建失败")
+                    print("db创建失败")
                 }else{
-                    println("db创建成功")
+                    print("db创建成功")
                 }
             }else{
-                println("open error")
+                print("open error")
             }
         }
     }

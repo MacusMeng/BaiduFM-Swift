@@ -19,7 +19,7 @@ class RoundImageView: UIImageView {
     */
     
     required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        super.init(coder: aDecoder)!
         
         //设置圆角
         self.clipsToBounds = true
@@ -32,7 +32,7 @@ class RoundImageView: UIImageView {
     
     func rotation(){
         
-        var animation = CABasicAnimation(keyPath: "transform.rotation")
+        let animation = CABasicAnimation(keyPath: "transform.rotation")
         animation.fromValue = 0.0
         animation.toValue = M_PI*2.0
         animation.duration = 20

@@ -8,7 +8,6 @@
 
 import WatchKit
 import Foundation
-import Async
 
 class InterfaceController: WKInterfaceController {
     
@@ -55,8 +54,7 @@ class InterfaceController: WKInterfaceController {
         self.curPlaySongId = info.id
         
         //UI
-        Async.main{
-            
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
             self.progressLabel.setText("00:00")
             self.songTimeLabel.setText("00:00")
             self.lrcLabel.setText("")
@@ -78,8 +76,8 @@ class InterfaceController: WKInterfaceController {
             }
         }
         
-        println("curIndex:\(DataManager.shareDataManager.curIndex),all:\(DataManager.shareDataManager.songInfoList.count)")
-        println(Double(DataManager.shareDataManager.curIndex) / Double(DataManager.shareDataManager.songInfoList.count))
+        print("curIndex:\(DataManager.shareDataManager.curIndex),all:\(DataManager.shareDataManager.songInfoList.count)")
+        print(Double(DataManager.shareDataManager.curIndex) / Double(DataManager.shareDataManager.songInfoList.count))
         if Double(DataManager.shareDataManager.curIndex) / Double(DataManager.shareDataManager.songInfoList.count) >= 0.75{
             self.loadMoreData()
         }
@@ -90,14 +88,14 @@ class InterfaceController: WKInterfaceController {
                 DataManager.shareDataManager.curSongLink = songLink
                 //播放歌曲
                 DataManager.shareDataManager.mp.stop()
-                var songUrl = Common.getCanPlaySongUrl(songLink.songLink)
+                let songUrl = Common.getCanPlaySongUrl(songLink.songLink)
                 DataManager.shareDataManager.mp.contentURL = NSURL(string: songUrl)
                 DataManager.shareDataManager.mp.prepareToPlay()
                 DataManager.shareDataManager.mp.play()
                 DataManager.shareDataManager.curPlayStatus = 1
                 
                 //显示歌曲时间
-                Async.main{
+                dispatch_async(dispatch_get_main_queue()) { () -> Void in
                     self.songTimeLabel.setText(Common.getMinuteDisplay(songLink.time))
                 }
                 
@@ -163,30 +161,30 @@ class InterfaceController: WKInterfaceController {
     func loadMoreData(){
         
         if DataManager.shareDataManager.songInfoList.count >= DataManager.shareDataManager.allSongIdList.count{
-            println("no more data:\(DataManager.shareDataManager.songInfoList.count),\(DataManager.shareDataManager.allSongIdList.count)")
+            print("no more data:\(DataManager.shareDataManager.songInfoList.count),\(DataManager.shareDataManager.allSongIdList.count)")
             return
         }
         
-        var curMaxCount = (Int(DataManager.shareDataManager.curIndex / 20) + 2) * 20
-        println("curMaxCount:\(curMaxCount)")
+        let curMaxCount = (Int(DataManager.shareDataManager.curIndex / 20) + 2) * 20
+        print("curMaxCount:\(curMaxCount)")
         if DataManager.shareDataManager.songInfoList.count >= curMaxCount {
             return
         }
         
-        var startIndex = DataManager.shareDataManager.songInfoList.count
+        let startIndex = DataManager.shareDataManager.songInfoList.count
         var endIndex = startIndex + 20
         
         if endIndex > DataManager.shareDataManager.allSongIdList.count-1 {
             endIndex = DataManager.shareDataManager.allSongIdList.count-1
         }
         
-        var ids = [] + DataManager.shareDataManager.allSongIdList[startIndex..<endIndex]
+        let ids = [] + DataManager.shareDataManager.allSongIdList[startIndex..<endIndex]
         
-        println("start load more data:\(startIndex),\(endIndex)")
+        print("start load more data:\(startIndex),\(endIndex)")
         HttpRequest.getSongInfoList(ids, callback:{ (infolist:[SongInfo]?) -> Void in
             if let sInfoList = infolist {
                 DataManager.shareDataManager.songInfoList += sInfoList
-                println("load more data success,count=\(DataManager.shareDataManager.songInfoList.count)")
+                print("load more data success,count=\(DataManager.shareDataManager.songInfoList.count)")
             }
         })
 
@@ -195,17 +193,17 @@ class InterfaceController: WKInterfaceController {
     func progresstimer(time:NSTimer){
     
         if let link = DataManager.shareDataManager.curSongLink {
-            var currentPlaybackTime = DataManager.shareDataManager.mp.currentPlaybackTime
+            let currentPlaybackTime = DataManager.shareDataManager.mp.currentPlaybackTime
             if currentPlaybackTime.isNaN {return}
             
-            var curTime = Int(currentPlaybackTime)
+            let curTime = Int(currentPlaybackTime)
             self.progressLabel.setText(Common.getMinuteDisplay(curTime))
             
             if link.time == curTime{
                 self.next()
             }
             
-            var (curLrc,nextLrc) = Common.currentLrcByTime(curTime, lrcArray: DataManager.shareDataManager.curLrcInfo)
+            let (curLrc,nextLrc) = Common.currentLrcByTime(curTime, lrcArray: DataManager.shareDataManager.curLrcInfo)
             self.lrcLabel.setText(curLrc)
             self.nextLrcLabel.setText(nextLrc)
         }

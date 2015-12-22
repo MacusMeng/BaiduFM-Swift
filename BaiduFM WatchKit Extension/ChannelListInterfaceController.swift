@@ -43,8 +43,8 @@ class ChannelListInterfaceController: WKInterfaceController {
     
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
         
-        var ch = DataManager.shareDataManager.chList[rowIndex]
-        println("\(ch.id),\(ch.name)")
+        let ch = DataManager.shareDataManager.chList[rowIndex]
+        print("\(ch.id),\(ch.name)")
         DataManager.shareDataManager.chid = ch.id
         
         self.pushControllerWithName("SongListInterfaceController", context: self)

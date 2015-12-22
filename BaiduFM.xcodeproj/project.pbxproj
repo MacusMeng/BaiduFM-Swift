@@ -54,8 +54,8 @@
 		67F0AEC61AD9FF8C000CB588 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67F0AEC51AD9FF8C000CB588 /* Images.xcassets */; };
 		67F0AEC91AD9FF8C000CB588 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67F0AEC71AD9FF8C000CB588 /* LaunchScreen.xib */; };
 		67F0AEF01ADA6EFE000CB588 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F0AEEF1ADA6EFE000CB588 /* MediaPlayer.framework */; };
-		AA579C433DF3257EB65609A4 /* Pods_BaiduFM_WatchKit_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A74E34AB8CFC526128A964DD /* Pods_BaiduFM_WatchKit_Extension.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		F964CFD7279512DD676A4FEE /* Pods_BaiduFM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DFAF1C2E553F9D6B4D386F3 /* Pods_BaiduFM.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AA579C433DF3257EB65609A4 /* Pods_BaiduFM_WatchKit_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A74E34AB8CFC526128A964DD /* Pods_BaiduFM_WatchKit_Extension.framework */; };
+		F964CFD7279512DD676A4FEE /* Pods_BaiduFM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DFAF1C2E553F9D6B4D386F3 /* Pods_BaiduFM.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -439,6 +439,7 @@
 		67F0AEB11AD9FF8C000CB588 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = lumeng;
 				TargetAttributes = {

@@ -1,34 +1,22 @@
 PODS:
-  - Alamofire (1.2.1)
-  - Async (1.2.0)
-  - Kingfisher (1.2.0)
-  - LTMorphingLabel (0.0.7)
-  - MJRefresh (1.4.5)
-  - SwiftyJSON (2.2.0)
+  - Alamofire (3.1.4)
+  - Kingfisher (1.8.5)
+  - LTMorphingLabel (0.0.9)
+  - MJRefresh (3.0.7)
+  - SwiftyJSON (2.3.2)
 
 DEPENDENCIES:
-  - Alamofire (~> 1.2)
-  - Async (from `https://github.com/duemunk/Async.git`)
+  - Alamofire (~> 3.1.4)
   - Kingfisher (~> 1.2)
   - LTMorphingLabel (~> 0.0.6)
   - MJRefresh
   - SwiftyJSON (>= 2.2)
 
-EXTERNAL SOURCES:
-  Async:
-    :git: https://github.com/duemunk/Async.git
-
-CHECKOUT OPTIONS:
-  Async:
-    :commit: ceb4051b248787cc860dd0e7169b1386e29345cf
-    :git: https://github.com/duemunk/Async.git
-
 SPEC CHECKSUMS:
-  Alamofire: 1acfdf179aff68b41a48dff70c1ac7fa263e2bcb
-  Async: aba7b48a4cd05dae27d1affce2f48f2ed61e75f9
-  Kingfisher: 17f76083d055d1f15f36cfe2cf8b7b39a3893e05
-  LTMorphingLabel: aef64d2adb1c659869a8fe22cf2dc7bbad2e28e5
-  MJRefresh: 4b24394e577ea399fbc926e5b6072317aae2c152
-  SwiftyJSON: 0b3e6c07af17ff745e77e8e9984097b55c956e5c
+  Alamofire: fbc829692f351fa1d8a31dd75fd7f7f56fea31fb
+  Kingfisher: 780fed0fa82692a3bd59d53329ae2b85cdd354a5
+  LTMorphingLabel: 4235a403f99f0e0e503389da660e0fec324549d9
+  MJRefresh: f3e1228ec3d38c7ba5208d58032631a52f39f495
+  SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
-COCOAPODS: 0.37.0.rc.1
+COCOAPODS: 0.39.0
